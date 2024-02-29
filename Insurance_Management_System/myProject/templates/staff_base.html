@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Navigation Bar</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background-color: #007bff; /* Preferred color */
+            border-radius: 10px; /* Rounded corners */
+            margin: 10px; /* Slightly smaller width */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+        }
+        .navbar-brand, .nav-link, .navbar-text {
+            color: #fff !important;
+        }
+        .nav-link {
+            transition: color 0.3s ease-in-out;
+        }
+        .nav-link:hover, .nav-link:focus {
+            color: #ffdd00 !important; /* Hover color */
+            background-color: transparent;
+            transition: color 0.3s ease-in-out;
+        }
+        .profile-picture {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+            margin-right: 5px;
+        }
+        .profile-picture:hover {
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+        .user-greeting {
+            display: flex;
+            align-items: center;
+            color: #fff !important; /* Matching text color */
+        }
+
+        {% block style %}{% endblock style %}
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#">InsuranceApp</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "add-agent" %}">Register Agents</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">New Policy Issue</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Claim Approval</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Issue Claim Amount</a>
+            </li>
+            <li class="nav-item user-greeting">
+                <img src="profile_picture_url.jpg" alt="Profile" class="profile-picture">
+                <span class="navbar-text"></span> <!-- Display user's name -->
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "handlelogout" %}">Sign Out</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+{% block body %}{% endblock body %}
+
+
+{% block scripts %}{% endblock scripts %}
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
