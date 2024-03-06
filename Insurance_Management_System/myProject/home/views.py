@@ -48,6 +48,9 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from .models import Customer
+from django.contrib.auth.hashers import make_password
+from django.conf import settings
+
 class EmailThread(threading.Thread):
        def __init__(self, email_message):
               super().__init__()
@@ -168,7 +171,7 @@ def handlelogin(request):
                 return redirect('/admin_dashboard/')  # Redirect to the admin dashboard page
             elif myuser.role == 'HOSPITAL':
                 return redirect('/hospital_dashboard/')
-            elif myuser.role == 'EMPLOYEE':
+            elif myuser.role == 'STAFF':
                 return redirect('staffhome')
 
         else:
@@ -647,61 +650,6 @@ def office_registration(request):
         return render(request, 'officereg.html')
     
 
-
-
-
-from django.contrib.auth.hashers import make_password
-from .models import Staff
-def register(request):
-    if request.method == "POST":
-        # User model fields
-        first_name = request.POST.get('first_name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        
-        # Staff model fields
-        staffid = request.POST.get('staffid')
-        name = request.POST.get('name')
-        hname = request.POST.get('hname')
-        place = request.POST.get('place')
-        pin = request.POST.get('pin')
-        phone = request.POST.get('phone')
-        district = request.POST.get('district')
-        state = request.POST.get('state')
-        dob = request.POST.get('dob')
-        # Assuming photo is handled as a file
-        photo = request.FILES.get('photo')
-        
-        # Create User
-        user = User.objects.create(
-            first_name=first_name,
-            email=email,
-            username=email,  # Assuming you want to use email as username
-             password=make_password(password),
-              role='EMPLOYEE'  # Hash password
-        )
-        
-        # Create Staff
-        Staff.objects.create(
-            user=user,
-            staffid=staffid,
-            name=name,
-            hname=hname,
-            place=place,
-            pin=pin,
-            phone=phone,
-            district=district,
-            state=state,
-            dob=dob,
-            photo=photo
-        )
-        
-        return redirect('handlelogin')  # Redirect to a new page upon successful registration
-    else:
-        return render(request, 'register.html')
-
-
-
 def staff_home(request):
     return render(request,'staff_home.html')
 
@@ -714,7 +662,7 @@ from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.crypto import get_random_string
-from .models import Agent
+from .models import Agent,Staff
 
 @never_cache
 def add_agent(request):
@@ -760,3 +708,59 @@ def add_agent(request):
         return HttpResponse("agent added sucessfully")  # Redirect to a new URL
 
     return render(request, 'add_agent.html')
+
+
+
+
+
+def register_staff(request):
+    if request.method == "POST":
+        # Extracting information from the request
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        phone = request.POST['phone']
+        address = request.POST['address']
+        place = request.POST['place']
+        pin = request.POST['pin']
+        district = request.POST['district']
+        state = request.POST['state']
+        dob = request.POST['dob']
+        photo = request.FILES['photo'] if 'photo' in request.FILES else None
+        password = request.POST['password']
+        
+        # Create user instance
+        User = get_user_model()
+        user = User.objects.create(
+            username=email,  # Assuming username is email for simplicity
+            email=email,
+            password=make_password(password),
+            role=User.Role.STAFF
+        )
+        # Optionally, you can use user.set_password(password) to handle hashing
+        user.save()
+        
+        # Create staff instance
+        staff = Staff(
+            user=user,
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone,
+            address=address,
+            place=place,
+            pin=pin,
+            district=district,
+            state=state,
+            dob=dob,
+            photo=photo
+        )
+        staff.save()
+
+        # Redirect to a new URL:
+        return redirect('staffhome')
+
+    # If a GET (or any other method) we'll create a blank form
+    else:
+        return render(request, 'register.html')
+
+# Remember to include the appropriate URLconf if you haven't already done so

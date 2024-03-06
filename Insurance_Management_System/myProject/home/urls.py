@@ -19,7 +19,7 @@ urlpatterns = [
     #path('employee_signup/',views.employee_signup,name="employee_signup"),
     path('hospital_dashboard/',views.hospital_dashboard,name="hospital_dashboard"),
     path('register-office/', views.office_registration, name='register_office'),
-     path('register/', views.register, name='register'),
+     path('register/', views.register_staff, name='register'),
      path('satffhome/',views.staff_home,name="staffhome"),
         path('add-agent/', views.add_agent, name='add-agent'),
    
