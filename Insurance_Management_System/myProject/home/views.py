@@ -448,38 +448,63 @@ import razorpay
 from . import models as CMODEL  # Assuming your models are in models.py within the same app
 
 # Initialize Razorpay client
-razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
 def apply_policy_view(request):
     customer = get_object_or_404(CMODEL.Customer, user_id=request.user.id)
     policies = CMODEL.Policy.objects.all()
 
     # Fixed amount for Razorpay payment, for demonstration
-    currency = 'INR'
-    amount = 2000  # Rs. 200
-
-    # Create a Razorpay Order
-    razorpay_order = razorpay_client.order.create(dict(amount=amount,
-                                                       currency=currency,
-                                                       payment_capture='0'))
-
-    # order id of newly created order.
-    razorpay_order_id = razorpay_order['id']
-    callback_url = '/paymenthandler/'  # Ensure this URL is configured to handle the payment status
+    
 
     # Context for rendering in the template
     context = {
-        'razorpay_order_id': razorpay_order_id,
-        'razorpay_merchant_key': settings.RAZOR_KEY_ID,
-        'razorpay_amount': amount,
-        'currency': currency,
-        'callback_url': callback_url,
+        
         'policies': policies,
         'customer': customer
     }
 
     # Use the 'apply_policy.html' template or another template that includes the Razorpay JavaScript code
     return render(request, 'customer/apply_policy.html', context=context)
+
+import razorpay
+from django.shortcuts import render
+from django.conf import settings
+
+razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+
+# views.py
+
+def payment2(request, item_id):
+    
+    currency = 'INR'
+    amount = 2000 * 100  # Rs. 2000, converted to paise
+
+    # You can use item_id here, for example, to get data related to what is being paid for
+    # item = get_object_or_404(MyModel, id=item_id)  # Assuming you're paying for items stored in a model
+
+    # Create a Razorpay Order
+    razorpay_order = razorpay_client.order.create(dict(amount=amount,
+                                                       currency=currency,
+                                                       payment_capture='1'))
+
+    razorpay_order_id = razorpay_order['id']
+    callback_url = 'your_callback_url_here'  # Specify your callback URL here
+
+    context = {
+        'razorpay_order_id': razorpay_order_id,
+        'razorpay_merchant_key': settings.RAZOR_KEY_ID,
+        'razorpay_amount': amount,
+        'currency': currency,
+        'callback_url': callback_url,
+        # 'item': item,  # You can pass the item to the template, if necessary
+    }
+    return render(request, 'customer/payment2.html', context=context)
+
+
+
+
+
+
 
 
 def apply_view(request,pk):

@@ -70,5 +70,7 @@ urlpatterns = [
 
     path('ask-question', views.ask_question_view,name='ask-question'),
     path('question-history', views.question_history_view,name='question-history'),
+    path('customer/payment2/<int:item_id>/', views.payment2, name='payment2'),
+
 
 ]
