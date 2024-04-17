@@ -21,7 +21,7 @@ urlpatterns = [
     path('register-office/', views.office_registration, name='register_office'),
      path('register/', views.register_staff, name='register'),
      path('satffhome/',views.staff_home,name="staffhome"),
-        path('add-agent/', views.add_agent, name='add-agent'),
+    path('add-agent/', views.add_agent, name='add-agent'),
    
 
 #############################################################################################
